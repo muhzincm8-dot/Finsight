@@ -115,6 +115,19 @@ export function Layout({ children, onAddTransaction }) {
                                 <span className="font-medium">{item.label}</span>
                             </Link>
                         ))}
+                        <Link
+                            to="/profile"
+                            className={cn(
+                                "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
+                                location.pathname === "/profile"
+                                    ? "bg-neon-blue/10 text-neon-blue"
+                                    : "text-gray-400 hover:bg-white/5 hover:text-white"
+                            )}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                            <User size={18} />
+                            <span className="font-medium">Profile</span>
+                        </Link>
                         <div className="pt-4 mt-4 border-t border-white/5 flex justify-between items-center px-4">
                             <span className="text-xs text-gray-500">Vault: 05940879</span>
                             <span className="text-xs text-neon-blue flex items-center gap-1">

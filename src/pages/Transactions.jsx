@@ -3,7 +3,7 @@ import { useBudget } from "../context/BudgetContext";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Button } from "../components/ui/Button";
-// import { formatCurrency, formatDate } from "../utils/cn";
+
 import { Search, Filter, Download, Plus, Trash2 } from "lucide-react";
 
 import { TransactionItem } from "../components/transactions/TransactionalItem";
@@ -87,7 +87,7 @@ export default function Transactions({ onAddClick }) {
 
             <div className="space-y-2">
                 {/* Table Header */}
-                <div className="grid grid-cols-12 px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider bg-white/5 rounded-lg border border-white/5">
+                <div className="hidden md:grid grid-cols-12 px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider bg-white/5 rounded-lg border border-white/5">
                     <div className="col-span-2">Date</div>
                     <div className="col-span-5">Description</div>
                     <div className="col-span-2">Sector</div>
