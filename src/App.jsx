@@ -3,9 +3,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { BudgetProvider, useBudget } from "./context/BudgetContext";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { Layout } from "./components/layout/Layout";
-import { Modal } from "./components/ui/Modal";
-import { Input } from "./components/ui/Input";
-import { Button } from "./components/ui/Button";
+// import { Modal } from "./components/ui/Modal";
+// import { Input } from "./components/ui/Input";
+// import { Button } from "./components/ui/Button";
 
 // Pages
 import Dashboard from "./pages/Dashboard";
@@ -16,7 +16,7 @@ import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 
 import { AddTransactionModal } from "./components/modals/AddTransactionModal";
-import { PrivateRoute } from "./components/navigation/PrivateRoute";
+import { PrivateRoute } from "./components/navigations/PrivateRoute";
 
 function AppContent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
