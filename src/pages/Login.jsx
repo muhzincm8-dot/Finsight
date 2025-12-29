@@ -71,9 +71,9 @@ export default function Login() {
                                 required
                             />
                             <div className="flex justify-end">
-                                {/* <Link to="#" className="text-xs text-neon-blue hover:text-white transition-colors">
+                                <Link to="#" className="text-xs text-neon-blue hover:text-white transition-colors">
                                     Forgot password?
-                                </Link> */}
+                                </Link>
                             </div>
                         </div>
 
@@ -84,9 +84,9 @@ export default function Login() {
 
                     <div className="mt-6 text-center text-sm text-gray-500">
                         Don't have an account?{" "}
-                        {/* <Link to="/signup" className="text-neon-blue hover:text-white font-medium transition-colors">
+                        <Link to="/signup" className="text-neon-blue hover:text-white font-medium transition-colors">
                             create one
-                        </Link> */}
+                        </Link>
                     </div>
                 </Card>
             </div>

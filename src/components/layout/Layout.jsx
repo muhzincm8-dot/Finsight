@@ -9,9 +9,9 @@ export function Layout({ children, onAddTransaction }) {
     const location = useLocation();
 
     const navItems = [
-        { label: "Dashboard", icon: LayoutDashboard },
-        { label: "Transactions", icon: WalletCards },
-        { label: "Insights",  icon: PieChart },
+        { label: "Dashboard", path: "/", icon: LayoutDashboard },
+        { label: "Transactions", path: "/transactions", icon: WalletCards },
+        { label: "Insights", path: "/insights", icon: PieChart },
     ];
 
     return (
@@ -62,11 +62,11 @@ export function Layout({ children, onAddTransaction }) {
                             </div>
                         </div>
 
-                        {/* <Link to="/profile" className="w-10 h-10 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:border-neon-blue/50 hover:shadow-[0_0_15px_rgba(0,243,255,0.2)] transition-all"> */}
-                            {/* <User size={20} /> */}
-                        {/* </Link> */}
-                        {/* {location.pathname === "/" && ( */}
-                            {/* <Button
+                        <Link to="/profile" className="w-10 h-10 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:border-neon-blue/50 hover:shadow-[0_0_15px_rgba(0,243,255,0.2)] transition-all">
+                            <User size={20} />
+                        </Link>
+                        {location.pathname === "/" && (
+                            <Button
                                 onClick={onAddTransaction}
                                 size="sm"
                                 className="shadow-none border border-neon-blue/30 bg-neon-blue/10 text-neon-blue hover:bg-neon-blue hover:text-dark-bg transition-all"
@@ -74,7 +74,7 @@ export function Layout({ children, onAddTransaction }) {
                                 <Plus size={18} />
                                 Add New
                             </Button>
-                        )} */}
+                        )}
                     </div>
 
                     {/* Mobile Menu Toggle */}
@@ -100,7 +100,7 @@ export function Layout({ children, onAddTransaction }) {
                 )}>
                     <div className="p-4 space-y-2">
                         {navItems.map((item) => (
-                            <div
+                            <Link
                                 key={item.path}
                                 to={item.path}
                                 className={cn(
@@ -113,7 +113,7 @@ export function Layout({ children, onAddTransaction }) {
                             >
                                 <item.icon size={18} />
                                 <span className="font-medium">{item.label}</span>
-                            </div>
+                            </Link>
                         ))}
                         <div className="pt-4 mt-4 border-t border-white/5 flex justify-between items-center px-4">
                             <span className="text-xs text-gray-500">Vault: 05940879</span>
