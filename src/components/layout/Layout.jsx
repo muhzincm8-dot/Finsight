@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, WalletCards, PieChart, Plus, Menu, X, TrendingUp, User } from "lucide-react";
+import { LayoutDashboard, WalletCards, PieChart, Plus, Menu, X, TrendingUp, User, Twitter, Linkedin, Instagram } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../ui/Button";
 import { cn } from "../../utils/cn";
@@ -145,6 +145,32 @@ export function Layout({ children, onAddTransaction }) {
                     {children}
                 </div>
             </main>
+
+            {/* Footer Area */}
+            <footer className="w-full bg-surface-dark border-t border-white/5 py-8 mt-auto">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="flex flex-col items-center md:items-start gap-1">
+                        <p className="text-gray-400 text-sm">
+                            Created by <span className="text-neon-blue font-semibold">Muhzin CM</span>
+                        </p>
+                        <p className="text-gray-500 text-xs">
+                            © {new Date().getFullYear()} FinSight. All rights reserved.
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        <a href="#" className="p-2 text-gray-400 hover:text-neon-blue hover:bg-neon-blue/10 rounded-lg transition-all" title="X (Twitter)">
+                            <Twitter size={20} />
+                        </a>
+                        <a href="#" className="p-2 text-gray-400 hover:text-neon-blue hover:bg-neon-blue/10 rounded-lg transition-all" title="LinkedIn">
+                            <Linkedin size={20} />
+                        </a>
+                        <a href="#" className="p-2 text-gray-400 hover:text-neon-blue hover:bg-neon-blue/10 rounded-lg transition-all" title="Instagram">
+                            <Instagram size={20} />
+                        </a>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 }
