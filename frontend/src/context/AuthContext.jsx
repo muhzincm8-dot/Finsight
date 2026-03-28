@@ -59,11 +59,18 @@ export function AuthProvider({ children }) {
         setCurrentUser(null);
     }
 
+    async function updateProfile(data) {
+        const res = await api.put('/auth/profile', data);
+        setCurrentUser(res.data);
+        return res.data;
+    }
+
     const value = {
         currentUser,
         signup,
         login,
-        logout
+        logout,
+        updateProfile
     };
 
     return (

@@ -9,7 +9,7 @@ import { User, LogOut, Shield, Mail, Phone, Camera, Edit2, Check, Download, Lock
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
-    const { currentUser, logout } = useAuth();
+    const { currentUser, logout, updateProfile } = useAuth();
     const { transactions } = useBudget();
     const navigate = useNavigate();
 
@@ -60,11 +60,19 @@ export default function Profile() {
         const file = e.target.files[0];
         if (file) {
             const Reader = new FileReader();
-            Reader.onload = (e) => {
-                setProfileImage(e.target.result);
-            };
-            Reader.readAsDataURL(file);
         }
+    };
+
+    const handleEditToggle = async () => {
+        if (isEditing) {
+            try {
+                // Save changes
+                await updateProfile({ mobileNumber: phoneNumber });
+            } catch (err) {
+                console.error("Failed to update profile", err);
+            }
+        }
+        setIsEditing(!isEditing);
     };
 
     const handleDataExport = () => {
@@ -99,7 +107,7 @@ export default function Profile() {
                     variant="ghost"
                     size="sm"
                     className="gap-2 text-neon-blue hover:bg-neon-blue/10"
-                    onClick={() => setIsEditing(!isEditing)}
+                    onClick={handleEditToggle}
                 >
                     {isEditing ? <Check size={18} /> : <Edit2 size={18} />}
                     {isEditing ? "Save Changes" : "Edit Profile"}

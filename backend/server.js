@@ -2,7 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 const authRoutes = require('./src/routes/authRoutes');
 const transactionRoutes = require('./src/routes/transactionRoutes');
 
