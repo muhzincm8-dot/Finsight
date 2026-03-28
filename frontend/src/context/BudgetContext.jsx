@@ -1,6 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { db } from "../firebase";
-import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "firebase/firestore";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import api from "../api/axios";
 import { useAuth } from "./AuthContext";
 
 const BudgetContext = createContext();
@@ -15,29 +14,29 @@ export function BudgetProvider({ children }) {
         return Number(localStorage.getItem("budgetGoal")) || 2000;
     });
 
-    useEffect(() => {
+    const fetchTransactions = useCallback(async () => {
         if (!currentUser) {
             setTransactions([]);
             setLoading(false);
             return;
         }
 
-        const q = query(
-            collection(db, "users", currentUser.uid, "transactions"),
-            orderBy("date", "desc")
-        );
-
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const docs = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setTransactions(docs);
+        try {
+            setLoading(true);
+            const res = await api.get('/transactions');
+            // Mongoose object id is _id, but frontend might expect id
+            const formattedTxns = res.data.map(t => ({...t, id: t._id }));
+            setTransactions(formattedTxns);
+        } catch (err) {
+            console.error("Error fetching transactions: ", err);
+        } finally {
             setLoading(false);
-        });
-
-        return unsubscribe;
+        }
     }, [currentUser]);
+
+    useEffect(() => {
+        fetchTransactions();
+    }, [fetchTransactions]);
 
     useEffect(() => {
         localStorage.setItem("budgetGoal", budgetGoal);
@@ -46,10 +45,9 @@ export function BudgetProvider({ children }) {
     const addTransaction = async (transaction) => {
         if (!currentUser) return;
         try {
-            await addDoc(collection(db, "users", currentUser.uid, "transactions"), {
-                ...transaction,
-                createdAt: new Date()
-            });
+            const res = await api.post('/transactions', transaction);
+            const newTxn = { ...res.data, id: res.data._id };
+            setTransactions(prev => [newTxn, ...prev]);
         } catch (e) {
             console.error("Error adding document: ", e);
         }
@@ -58,7 +56,8 @@ export function BudgetProvider({ children }) {
     const deleteTransaction = async (id) => {
         if (!currentUser) return;
         try {
-            await deleteDoc(doc(db, "users", currentUser.uid, "transactions", id));
+            await api.delete(`/transactions/${id}`);
+            setTransactions(prev => prev.filter(t => t.id !== id));
         } catch (e) {
             console.error("Error deleting document: ", e);
         }

@@ -1,14 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../firebase";
-import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged,
-    setPersistence,
-    browserSessionPersistence,
-    updateProfile
-} from "firebase/auth";
+import api from "../api/axios";
 
 const AuthContext = createContext();
 
@@ -20,33 +11,53 @@ export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    function signup(email, password, name) {
-        return setPersistence(auth, browserSessionPersistence)
-            .then(() => createUserWithEmailAndPassword(auth, email, password))
-            .then((userCredential) => {
-                return updateProfile(userCredential.user, {
-                    displayName: name
-                });
-            });
+    useEffect(() => {
+        const fetchUser = async () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                try {
+                    const res = await api.get('/auth/profile');
+                    setCurrentUser(res.data);
+                } catch (err) {
+                    console.error("Failed to fetch user profile", err);
+                    localStorage.removeItem("token");
+                    setCurrentUser(null);
+                }
+            } else {
+                setCurrentUser(null);
+            }
+            setLoading(false);
+        };
+
+        fetchUser();
+    }, []);
+
+    async function signup(email, password, name, mobileNumber) {
+        const res = await api.post('/auth/register', {
+            email,
+            password,
+            name,
+            mobileNumber
+        });
+        localStorage.setItem("token", res.data.token);
+        setCurrentUser(res.data.user);
+        return res.data.user;
     }
 
-    function login(email, password) {
-        return setPersistence(auth, browserSessionPersistence)
-            .then(() => signInWithEmailAndPassword(auth, email, password));
+    async function login(email, password) {
+        const res = await api.post('/auth/login', {
+            email,
+            password
+        });
+        localStorage.setItem("token", res.data.token);
+        setCurrentUser(res.data.user);
+        return res.data.user;
     }
 
     function logout() {
-        return signOut(auth);
+        localStorage.removeItem("token");
+        setCurrentUser(null);
     }
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setCurrentUser(user);
-            setLoading(false);
-        });
-
-        return unsubscribe;
-    }, []);
 
     const value = {
         currentUser,

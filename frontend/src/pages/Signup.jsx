@@ -9,6 +9,7 @@ import { TrendingUp, Lock, Mail, AlertCircle, User } from "lucide-react";
 export default function Signup() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [mobileNumber, setMobileNumber] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
@@ -26,7 +27,7 @@ export default function Signup() {
         try {
             setError("");
             setLoading(true);
-            await signup(email, password, name);
+            await signup(email, password, name, mobileNumber);
             navigate("/");
         } catch (err) {
             setError("Failed to create an account. " + err.message);
@@ -74,6 +75,16 @@ export default function Signup() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             icon={Mail}
+                            required
+                        />
+
+                        <Input
+                            label="Mobile Number"
+                            type="tel"
+                            placeholder="+1 234 567 890"
+                            value={mobileNumber}
+                            onChange={(e) => setMobileNumber(e.target.value)}
+                            icon={User}
                             required
                         />
 

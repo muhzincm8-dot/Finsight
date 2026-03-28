@@ -14,7 +14,7 @@ export default function Profile() {
     const navigate = useNavigate();
 
     const [isEditing, setIsEditing] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState("+91 (10) 00000000");
+    const [phoneNumber, setPhoneNumber] = useState(currentUser?.mobileNumber || "+91 (10) 00000000");
     const [profileImage, setProfileImage] = useState(null);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
 
@@ -136,7 +136,7 @@ export default function Profile() {
                     </div>
                     <div className="text-center md:text-left flex-1">
                         <h2 className="text-2xl font-bold text-white mb-1">
-                            {currentUser?.displayName || "User"}
+                            {currentUser?.name || currentUser?.displayName || "User"}
                         </h2>
                         <div className="flex flex-col gap-2 mt-2">
                             <div className="flex items-center gap-2 text-gray-400 justify-center md:justify-start">
@@ -153,7 +153,7 @@ export default function Profile() {
                                         className="bg-transparent border-b border-white/20 outline-none text-white w-[140px] px-1 focus:border-neon-blue"
                                     />
                                 ) : (
-                                    <span>{phoneNumber}</span>
+                                    <span>{currentUser?.mobileNumber || phoneNumber}</span>
                                 )}
                             </div>
                         </div>
