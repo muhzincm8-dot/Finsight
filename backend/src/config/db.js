@@ -3,13 +3,21 @@ import mongoose from 'mongoose';
 const connectDB = async () => {
   try {
     if (!process.env.MONGODB_URI) {
-      throw new Error('MONGODB_URI is not defined! Ensure environment variables are set in Vercel.');
+      console.error('MONGODB_URI is not defined in environment variables!');
+      return;
     }
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    // Reuse existing connection on Vercel (serverless warm starts)
+    if (mongoose.connection.readyState >= 1) {
+      console.log('MongoDB already connected');
+      return;
+    }
+    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+    });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`MongoDB connection error: ${error.message}`);
-    // Don't call process.exit on Vercel serverless — just log
+    // Do NOT call process.exit() on Vercel — it will crash the function
   }
 };
 

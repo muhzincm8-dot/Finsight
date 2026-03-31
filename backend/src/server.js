@@ -1,23 +1,19 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-
 import connectDB from './config/db.js';
-
 import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// NOTE: Do NOT call dotenv.config() here.
+// Vercel injects environment variables directly into process.env.
+// Calling dotenv with a missing .env file path on Vercel causes startup crashes.
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// CORS – reflect any origin back (supports credentials, works on Vercel)
+// ─── CORS ────────────────────────────────────────────────────────────────────
+// `origin: true` reflects the requesting origin back, which is required when
+// using `credentials: true`. Using `"*"` with credentials is forbidden by the
+// CORS spec and will be rejected by browsers.
 app.use(cors({
   origin: true,
   credentials: true,
@@ -25,41 +21,39 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Handle preflight OPTIONS requests
+// Handle CORS preflight for all routes
 app.options('*', cors({ origin: true, credentials: true }));
 
-// Middleware
+// ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(express.json());
 
-// Connect to MongoDB
+// ─── Database ─────────────────────────────────────────────────────────────────
 connectDB();
 
-// Routes
+// ─── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
 
-// Health check
+// ─── Health check ─────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.json({ message: 'Backend API is running', status: 'ok' });
 });
 
-// Global error handler
+// ─── Global error handler ─────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err.message);
   res.status(500).json({ msg: 'Internal server error', error: err.message });
 });
 
-// if (!process.env.VERCEL) {
-//   app.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`);
-//   });
-// }
-// Start server (Only runs in local development, Vercel handles this in prod)
-
+// ─── Local dev only ───────────────────────────────────────────────────────────
+// On Vercel, app.listen() must NOT be called — Vercel invokes the exported app
+// directly as a serverless function. Calling listen() on Vercel causes
+// FUNCTION_INVOCATION_FAILED crashes.
 if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`server is running at port: ${PORT}`);
-    });
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 }
 
 export default app;
