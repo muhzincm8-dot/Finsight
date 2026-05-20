@@ -1,11 +1,7 @@
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// Load .env for local development. On Vercel, env vars are injected automatically.
+dotenv.config();
 
 import express from "express";
 import cors from "cors";
@@ -28,21 +24,33 @@ app.use(
 
 app.use(express.json());
 
-/* ---------------- Database ---------------- */
-
-connectDB();
+/* ---------------- DB Connection Middleware ---------------- */
+// On Vercel (serverless), each invocation needs to ensure DB is connected.
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('DB connection failed:', err.message);
+    return res.status(500).json({ message: 'Database connection failed', error: err.message });
+  }
+});
 
 /* ---------------- Routes ---------------- */
 
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
 
-/* ---------------- Test Route ---------------- */
+/* ---------------- Health / Test Route ---------------- */
 
 app.get("/", (req, res) => {
   res.json({
     message: "Backend API Running",
     status: "OK",
+    env: {
+      mongoUri: !!process.env.MONGODB_URI,
+      secretKey: !!process.env.SECRET_KEY,
+    },
   });
 });
 
@@ -50,7 +58,6 @@ app.get("/", (req, res) => {
 
 app.use((err, req, res, next) => {
   console.error(err);
-
   res.status(500).json({
     message: "Internal Server Error",
     error: err.message,
@@ -60,8 +67,7 @@ app.use((err, req, res, next) => {
 /* ---------------- Local Development ---------------- */
 
 if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 4000;
-
+  const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
