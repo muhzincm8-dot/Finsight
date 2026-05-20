@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const fetchUser = async () => {
             const token = localStorage.getItem("token");
-            if (token) {
+            if (token && token !== "undefined" && token !== "null") {
                 try {
                     const res = await api.get('/auth/profile');
                     setCurrentUser(res.data);
@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
 
     async function signup(email, password, name, mobileNumber) {
         const res = await api.post('/auth/register', {
-            email,
+            email: email.toLowerCase().trim(),
             password,
             name,
             mobileNumber
@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
 
     async function login(email, password) {
         const res = await api.post('/auth/login', {
-            email,
+            email: email.toLowerCase().trim(),
             password
         });
         localStorage.setItem("token", res.data.token);

@@ -10,7 +10,12 @@ import User from '../models/User.js';
 // @desc    Register user
 // @access  Public
 router.post('/register', async (req, res) => {
-  const { name, email, password, mobileNumber } = req.body;
+  const { name, password, mobileNumber } = req.body;
+  const email = req.body.email?.toLowerCase().trim();
+
+  if (!email || !password || !name) {
+    return res.status(400).json({ msg: 'Please provide name, email and password' });
+  }
 
   try {
     let user = await User.findOne({ email });
@@ -39,7 +44,7 @@ router.post('/register', async (req, res) => {
 
     jwt.sign(
       payload,
-      process.env.SECRET_KEY,
+      process.env.SECRET_KEY || 'Muhzincmfinsight',
       { expiresIn: '7d' },
       (err, token) => {
         if (err) throw err;
@@ -56,7 +61,12 @@ router.post('/register', async (req, res) => {
 // @desc    Authenticate user & get token
 // @access  Public
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { password } = req.body;
+  const email = req.body.email?.toLowerCase().trim();
+
+  if (!email || !password) {
+    return res.status(400).json({ msg: 'Please provide email and password' });
+  }
 
   try {
     let user = await User.findOne({ email });
@@ -79,7 +89,7 @@ router.post('/login', async (req, res) => {
 
     jwt.sign(
       payload,
-      process.env.SECRET_KEY,
+      process.env.SECRET_KEY || 'Muhzincmfinsight',
       { expiresIn: '7d' },
       (err, token) => {
         if (err) throw err;
