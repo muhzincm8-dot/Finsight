@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { Card } from "../components/ui/Card";
-import { TrendingUp, Lock, Mail, AlertCircle } from "lucide-react";
+import { TrendingUp, Lock, Mail, AlertCircle, ShieldOff } from "lucide-react";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -13,6 +13,10 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Check if redirected here due to account suspension
+    const isSuspended = location.state?.suspended;
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -22,7 +26,13 @@ export default function Login() {
             await login(email, password);
             navigate("/");
         } catch (err) {
-            setError("Failed to sign in. Please check your credentials.");
+            const status = err?.response?.status;
+            const serverMsg = err?.response?.data?.msg;
+            if (status === 403) {
+                setError(serverMsg || "Your account has been suspended. Please contact support.");
+            } else {
+                setError("Failed to sign in. Please check your credentials.");
+            }
             console.error(err);
         }
         setLoading(false);
@@ -42,6 +52,13 @@ export default function Login() {
                 </div>
 
                 <Card className="border-t border-neon-blue/20">
+                    {isSuspended && !error && (
+                        <div className="mb-6 p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg flex items-center gap-3 text-orange-400 text-sm">
+                            <ShieldOff size={18} />
+                            Your session was ended because your account was suspended.
+                        </div>
+                    )}
+
                     {error && (
                         <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-3 text-red-400 text-sm">
                             <AlertCircle size={18} />

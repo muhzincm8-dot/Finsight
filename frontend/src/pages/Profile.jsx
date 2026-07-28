@@ -1,11 +1,11 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useBudget } from "../context/BudgetContext";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Modal } from "../components/ui/Modal";
-import { User, LogOut, Shield, Mail, Phone, Camera, Edit2, Check, Download, Lock } from "lucide-react";
+import { User, LogOut, Shield, Mail, Phone, Camera, Edit2, Check, Download, Lock, Crown, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
@@ -14,7 +14,10 @@ export default function Profile() {
     const navigate = useNavigate();
 
     const [isEditing, setIsEditing] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState(currentUser?.mobileNumber || "+91 (10) 00000000");
+    const [name, setName] = useState(currentUser?.name || "");
+    const [phoneNumber, setPhoneNumber] = useState(currentUser?.mobileNumber || "");
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState("");
     const [profileImage, setProfileImage] = useState(null);
     const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
 
@@ -26,12 +29,18 @@ export default function Profile() {
 
     const fileInputRef = useRef(null);
 
+    // Sync local state when currentUser changes (fixes profile bug)
+    useEffect(() => {
+        if (currentUser) {
+            setName(currentUser.name || "");
+            setPhoneNumber(currentUser.mobileNumber || "");
+        }
+    }, [currentUser]);
+
     const handle2FAToggle = () => {
         if (is2FAEnabled) {
-            // If already enabled, just turn it off
             setIs2FAEnabled(false);
         } else {
-            // If disabled, open OTP modal to verify
             setOtp("");
             setOtpError("");
             setIsOTPModalOpen(true);
@@ -59,18 +68,25 @@ export default function Profile() {
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
-            const Reader = new FileReader();
+            const reader = new FileReader();
+            reader.onloadend = () => setProfileImage(reader.result);
+            reader.readAsDataURL(file);
         }
     };
 
     const handleEditToggle = async () => {
         if (isEditing) {
             try {
-                // Save changes
-                await updateProfile({ mobileNumber: phoneNumber });
+                setSaveError("");
+                setIsSaving(true);
+                await updateProfile({ name, mobileNumber: phoneNumber });
             } catch (err) {
                 console.error("Failed to update profile", err);
+                setSaveError("Failed to save changes. Please try again.");
+                setIsSaving(false);
+                return;
             }
+            setIsSaving(false);
         }
         setIsEditing(!isEditing);
     };
@@ -81,7 +97,7 @@ export default function Profile() {
             headers.join(","),
             ...transactions.map(t => [
                 t.date,
-                `"${t.description.replace(/"/g, '""')}"`,
+                `"${t.description?.replace(/"/g, '""')}"`,
                 t.category,
                 t.type,
                 t.amount
@@ -92,12 +108,14 @@ export default function Profile() {
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.setAttribute("href", url);
-        link.setAttribute("download", `vault_export_${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute("download", `finsight_export_${new Date().toISOString().split('T')[0]}.csv`);
         link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
+
+    const isPremium = currentUser?.hasPaid;
 
     return (
         <div className="max-w-2xl mx-auto space-y-8">
@@ -108,11 +126,45 @@ export default function Profile() {
                     size="sm"
                     className="gap-2 text-neon-blue hover:bg-neon-blue/10"
                     onClick={handleEditToggle}
+                    disabled={isSaving}
                 >
                     {isEditing ? <Check size={18} /> : <Edit2 size={18} />}
-                    {isEditing ? "Save Changes" : "Edit Profile"}
+                    {isSaving ? "Saving..." : isEditing ? "Save Changes" : "Edit Profile"}
                 </Button>
             </div>
+
+            {saveError && (
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                    {saveError}
+                </div>
+            )}
+
+            {/* Premium Banner */}
+            {isPremium ? (
+                <div className="p-4 rounded-xl bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/30 flex items-center gap-3">
+                    <Crown size={20} className="text-yellow-400 flex-shrink-0" />
+                    <div>
+                        <p className="text-yellow-300 font-semibold text-sm">Premium Member — Lifetime Access</p>
+                        <p className="text-yellow-500/70 text-xs">
+                            Unlocked on {currentUser?.paymentDate ? new Date(currentUser.paymentDate).toLocaleDateString() : "—"}
+                        </p>
+                    </div>
+                </div>
+            ) : (
+                <div
+                    className="p-4 rounded-xl bg-gradient-to-r from-neon-blue/5 to-purple-500/5 border border-neon-blue/20 flex items-center justify-between gap-3 cursor-pointer hover:border-neon-blue/40 transition-colors"
+                    onClick={() => navigate("/upgrade")}
+                >
+                    <div className="flex items-center gap-3">
+                        <Zap size={20} className="text-neon-blue flex-shrink-0" />
+                        <div>
+                            <p className="text-white font-semibold text-sm">Upgrade to Premium</p>
+                            <p className="text-gray-500 text-xs">One-time payment for lifetime access</p>
+                        </div>
+                    </div>
+                    <Button size="sm" className="flex-shrink-0">Upgrade — ₹499</Button>
+                </div>
+            )}
 
             <Card className="relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-32 bg-neon-blue/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
@@ -143,9 +195,19 @@ export default function Profile() {
                         />
                     </div>
                     <div className="text-center md:text-left flex-1">
-                        <h2 className="text-2xl font-bold text-white mb-1">
-                            {currentUser?.name || currentUser?.displayName || "User"}
-                        </h2>
+                        {isEditing ? (
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="bg-transparent border-b border-white/20 outline-none text-white text-2xl font-bold w-full px-1 focus:border-neon-blue mb-1"
+                                placeholder="Your name"
+                            />
+                        ) : (
+                            <h2 className="text-2xl font-bold text-white mb-1">
+                                {currentUser?.name || "User"}
+                            </h2>
+                        )}
                         <div className="flex flex-col gap-2 mt-2">
                             <div className="flex items-center gap-2 text-gray-400 justify-center md:justify-start">
                                 <Mail size={14} />
@@ -158,16 +220,31 @@ export default function Profile() {
                                         type="tel"
                                         value={phoneNumber}
                                         onChange={(e) => setPhoneNumber(e.target.value)}
-                                        className="bg-transparent border-b border-white/20 outline-none text-white w-[140px] px-1 focus:border-neon-blue"
+                                        className="bg-transparent border-b border-white/20 outline-none text-white w-[160px] px-1 focus:border-neon-blue"
+                                        placeholder="Phone number"
                                     />
                                 ) : (
-                                    <span>{currentUser?.mobileNumber || phoneNumber}</span>
+                                    <span>{currentUser?.mobileNumber || "Not set"}</span>
                                 )}
                             </div>
                         </div>
-                        <div className="flex items-center gap-2 text-neon-green text-xs mt-3 justify-center md:justify-start font-mono">
-                            <Shield size={12} />
-                            <span>Verified Citizen</span>
+                        <div className="flex items-center gap-2 mt-3 justify-center md:justify-start flex-wrap">
+                            <div className="flex items-center gap-1.5 text-neon-green text-xs font-mono">
+                                <Shield size={12} />
+                                <span>Verified Citizen</span>
+                            </div>
+                            {isPremium && (
+                                <div className="flex items-center gap-1.5 text-yellow-400 text-xs font-mono">
+                                    <Crown size={12} />
+                                    <span>Premium</span>
+                                </div>
+                            )}
+                            {currentUser?.role === 'admin' && (
+                                <div className="flex items-center gap-1.5 text-purple-400 text-xs font-mono">
+                                    <Shield size={12} />
+                                    <span>Admin</span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -193,6 +270,21 @@ export default function Profile() {
                             </div>
                             <Button variant="outline" size="sm" onClick={handleDataExport}>Download</Button>
                         </div>
+
+                        {currentUser?.role === 'admin' && (
+                            <div
+                                className="p-4 rounded-lg bg-purple-500/5 border border-purple-500/20 flex justify-between items-center group hover:border-purple-500/40 transition-colors cursor-pointer"
+                                onClick={() => navigate("/admin")}
+                            >
+                                <div>
+                                    <p className="font-medium text-white flex items-center gap-2">
+                                        <Shield size={16} className="text-purple-400" /> Admin Panel
+                                    </p>
+                                    <p className="text-sm text-gray-500">Manage users and settings</p>
+                                </div>
+                                <Button variant="outline" size="sm" className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10">Open</Button>
+                            </div>
+                        )}
                     </div>
 
                     <div className="pt-4 flex justify-end">

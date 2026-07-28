@@ -6,6 +6,18 @@ import auth from '../middleware/auth.js';
 
 import User from '../models/User.js';
 
+// Helper to build safe user object
+const safeUser = (user) => ({
+  id: user.id,
+  name: user.name,
+  email: user.email,
+  mobileNumber: user.mobileNumber,
+  role: user.role,
+  isActive: user.isActive,
+  hasPaid: user.hasPaid,
+  paymentDate: user.paymentDate,
+});
+
 // @route   POST api/auth/register
 // @desc    Register user
 // @access  Public
@@ -48,7 +60,7 @@ router.post('/register', async (req, res) => {
       { expiresIn: '7d' },
       (err, token) => {
         if (err) throw err;
-        res.json({ token, user: { id: user.id, name: user.name, email: user.email, mobileNumber: user.mobileNumber } });
+        res.json({ token, user: safeUser(user) });
       }
     );
   } catch (err) {
@@ -81,6 +93,11 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ msg: 'Invalid Credentials' });
     }
 
+    // Block suspended users before issuing token
+    if (!user.isActive) {
+      return res.status(403).json({ msg: 'Your account has been suspended. Please contact support.' });
+    }
+
     const payload = {
       user: {
         id: user.id
@@ -93,7 +110,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' },
       (err, token) => {
         if (err) throw err;
-        res.json({ token, user: { id: user.id, name: user.name, email: user.email, mobileNumber: user.mobileNumber } });
+        res.json({ token, user: safeUser(user) });
       }
     );
   } catch (err) {
@@ -108,7 +125,8 @@ router.post('/login', async (req, res) => {
 router.get('/profile', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+    res.json(safeUser(user));
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
@@ -119,16 +137,17 @@ router.get('/profile', auth, async (req, res) => {
 // @desc    Update user profile
 // @access  Private
 router.put('/profile', auth, async (req, res) => {
-  const { mobileNumber } = req.body;
+  const { name, mobileNumber } = req.body;
 
   try {
     let user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ msg: 'User not found' });
 
-    user.mobileNumber = mobileNumber || user.mobileNumber;
+    if (name) user.name = name;
+    if (mobileNumber) user.mobileNumber = mobileNumber;
     await user.save();
 
-    res.json(user);
+    res.json(safeUser(user));
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');

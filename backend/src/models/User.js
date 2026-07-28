@@ -20,7 +20,24 @@ const userSchema = new mongoose.Schema({
   mobileNumber: {
     type: String,
     trim: true,
-  }
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+  hasPaid: {
+    type: Boolean,
+    default: false,
+  },
+  paymentDate: {
+    type: Date,
+    default: null,
+  },
 }, { timestamps: true });
 
 export default mongoose.model('User', userSchema);

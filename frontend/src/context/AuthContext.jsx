@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import api from "../api/axios";
 
 const AuthContext = createContext();
@@ -11,26 +11,32 @@ export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            const token = localStorage.getItem("token");
-            if (token && token !== "undefined" && token !== "null") {
-                try {
-                    const res = await api.get('/auth/profile');
-                    setCurrentUser(res.data);
-                } catch (err) {
-                    console.error("Failed to fetch user profile", err);
-                    localStorage.removeItem("token");
-                    setCurrentUser(null);
-                }
-            } else {
+    const refreshUser = useCallback(async () => {
+        const token = localStorage.getItem("token");
+        if (token && token !== "undefined" && token !== "null") {
+            try {
+                const res = await api.get('/auth/profile');
+                setCurrentUser(res.data);
+                return res.data;
+            } catch (err) {
+                console.error("Failed to fetch user profile", err);
+                localStorage.removeItem("token");
                 setCurrentUser(null);
+                return null;
             }
+        } else {
+            setCurrentUser(null);
+            return null;
+        }
+    }, []);
+
+    useEffect(() => {
+        const init = async () => {
+            await refreshUser();
             setLoading(false);
         };
-
-        fetchUser();
-    }, []);
+        init();
+    }, [refreshUser]);
 
     async function signup(email, password, name, mobileNumber) {
         const res = await api.post('/auth/register', {
@@ -61,16 +67,19 @@ export function AuthProvider({ children }) {
 
     async function updateProfile(data) {
         const res = await api.put('/auth/profile', data);
+        // Refresh from server to get latest state
         setCurrentUser(res.data);
         return res.data;
     }
 
     const value = {
         currentUser,
+        setCurrentUser,
         signup,
         login,
         logout,
-        updateProfile
+        updateProfile,
+        refreshUser,
     };
 
     return (
