@@ -29,7 +29,7 @@ export default function Transactions({ onAddClick }) {
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <h1 className="text-xl font-bold">Encrypted Transaction Log</h1>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Encrypted Transaction Log</h1>
                 <div className="flex gap-2">
                     <Button variant="outline" size="sm" className="gap-2" onClick={() => downloadTransactionsCSV(filtered)}>
                         <Download size={16} /> Download CSV
@@ -51,7 +51,7 @@ export default function Transactions({ onAddClick }) {
                     />
                     <div className="relative min-w-[200px]">
                         <select
-                            className="w-full bg-surface-dark border border-white/10 rounded-lg px-4 py-2.5 text-white outline-none appearance-none focus:border-neon-blue/50"
+                            className="w-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-white/10 rounded-lg px-4 py-2.5 text-gray-900 dark:text-white outline-none appearance-none focus:border-accent/50"
                             value={filterCategory}
                             onChange={(e) => setFilterCategory(e.target.value)}
                         >
@@ -68,7 +68,7 @@ export default function Transactions({ onAddClick }) {
 
             <div className="space-y-2">
                 {/* Table Header */}
-                <div className="hidden md:grid grid-cols-12 px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider bg-white/5 rounded-lg border border-white/5">
+                <div className="hidden md:grid grid-cols-12 px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-wider bg-gray-50 dark:bg-white/5 rounded-lg border border-gray-200 dark:border-white/5">
                     <div className="col-span-2">Date</div>
                     <div className="col-span-5">Description</div>
                     <div className="col-span-2">Sector</div>

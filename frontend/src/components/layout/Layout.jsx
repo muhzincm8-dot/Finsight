@@ -1,177 +1,229 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, WalletCards, PieChart, Plus, Menu, X, TrendingUp, User, Twitter, Linkedin, Instagram } from "lucide-react";
-import { useState } from "react";
+import {
+    LayoutDashboard, ArrowLeftRight, PieChart, Settings,
+    Plus, Menu, X, TrendingUp, User, Bell, Moon, Sun,
+    Twitter, Linkedin, Instagram, MessageSquare, Cloud
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
 import { cn } from "../../utils/cn";
-import { NAV_ITEMS } from "../../constants";
+import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
+import { NAV_ITEMS, SIDEBAR_BOTTOM_ITEMS } from "../../constants";
 
-const ICON_MAP = { LayoutDashboard, WalletCards, PieChart };
+const ICON_MAP = { LayoutDashboard, ArrowLeftRight, PieChart, Settings };
 
 export function Layout({ children, onAddTransaction }) {
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [syncMinutes, setSyncMinutes] = useState(2);
     const location = useLocation();
+    const { currentUser } = useAuth();
+    const { theme, toggleTheme } = useTheme();
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setSyncMinutes(prev => prev < 59 ? prev + 1 : 1);
+        }, 60000);
+        return () => clearInterval(interval);
+    }, []);
 
     const navItems = NAV_ITEMS.map(item => ({
         ...item,
         icon: ICON_MAP[item.icon],
     }));
 
-    return (
-        <div className="min-h-screen flex flex-col bg-dark-bg text-white font-sans overflow-x-hidden">
-            {/* Top Horizontal Navbar */}
-            <nav className="sticky top-0 z-50 w-full bg-surface-dark/80 backdrop-blur-lg border-b border-white/5">
-                <div className="max-w-[1920px] mx-auto px-6 h-20 flex items-center justify-between">
+    const bottomItems = SIDEBAR_BOTTOM_ITEMS.map(item => ({
+        ...item,
+        icon: ICON_MAP[item.icon],
+    }));
 
-                    {/* Left: Logo & Brand */}
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-blue to-blue-600 flex items-center justify-center shadow-lg shadow-neon-blue/20">
-                            <TrendingUp className="w-6 h-6 text-white" />
-                        </div>
-                        <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-neon-blue to-white tracking-wide">
-                            FinSight
-                        </span>
-                    </div>
+    const currentPageTitle = navItems.find(i => i.path === location.pathname)?.label
+        || bottomItems.find(i => i.path === location.pathname)?.label
+        || "Dashboard";
 
-                    {/* Center: Navigation Links (Desktop) */}
-                    <div className="hidden md:flex items-center gap-12 absolute left-1/2 -translate-x-1/2">
-                        {navItems.map((item) => (
-                            <Link
-                                key={item.path}
-                                to={item.path}
-                                className={cn(
-                                    "text-sm font-medium transition-all duration-200 hover:text-white flex items-center gap-2",
-                                    location.pathname === item.path
-                                        ? "text-neon-blue"
-                                        : "text-gray-400"
-                                )}
-                            >
-                                {item.label}
-                            </Link>
-                        ))}
-                    </div>
-
-                    {/* Right: Actions & Status */}
-                    <div className="hidden md:flex items-center gap-6">
-                        <div className="text-right hidden lg:block">
-                            <p className="text-[10px] text-gray-500 uppercase tracking-wider font-mono">Vault: 05940879</p>
-                            <div className="flex items-center justify-end gap-1.5 text-neon-blue text-xs font-mono">
-                                <span className="relative flex h-1.5 w-1.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-blue opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-neon-blue"></span>
-                                </span>
-                                Cloud Sync Active
-                            </div>
-                        </div>
-
-                        <Link to="/profile" className="w-10 h-10 rounded-full bg-surface-dark border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:border-neon-blue/50 hover:shadow-[0_0_15px_rgba(0,243,255,0.2)] transition-all">
-                            <User size={20} />
-                        </Link>
-                        {location.pathname === "/" && (
-                            <Button
-                                onClick={onAddTransaction}
-                                size="sm"
-                                className="shadow-none border border-neon-blue/30 bg-neon-blue/10 text-neon-blue hover:bg-neon-blue hover:text-dark-bg transition-all"
-                            >
-                                <Plus size={18} />
-                                Add New
-                            </Button>
-                        )}
-                    </div>
-
-                    {/* Mobile Menu Toggle */}
-                    <div className="flex md:hidden items-center gap-4">
-                        {location.pathname === "/" && (
-                            <Button onClick={onAddTransaction} size="icon" variant="ghost" className="text-neon-blue">
-                                <Plus size={20} />
-                            </Button>
-                        )}
-                        <button
-                            className="text-gray-400 hover:text-white"
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        >
-                            {isMobileMenuOpen ? <X /> : <Menu />}
-                        </button>
-                    </div>
+    const SidebarContent = () => (
+        <div className="flex flex-col h-full">
+            {/* Logo */}
+            <div className="px-6 py-6 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-accent dark:bg-[#0d2a1b] flex items-center justify-center border border-gray-100 dark:border-white/5">
+                    <TrendingUp className="w-6 h-6 text-white" strokeWidth={3} />
                 </div>
+                <span className="text-xl font-bold text-gray-900 dark:text-white tracking-wide">
+                    FinSight
+                </span>
+            </div>
 
-                {/* Mobile Navigation Dropdown */}
-                <div className={cn(
-                    "md:hidden overflow-hidden transition-all duration-300 ease-in-out border-b border-white/5 bg-surface-dark",
-                    isMobileMenuOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-                )}>
-                    <div className="p-4 space-y-2">
-                        {navItems.map((item) => (
-                            <Link
-                                key={item.path}
-                                to={item.path}
-                                className={cn(
-                                    "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                                    location.pathname === item.path
-                                        ? "bg-neon-blue/10 text-neon-blue"
-                                        : "text-gray-400 hover:bg-white/5 hover:text-white"
-                                )}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                <item.icon size={18} />
-                                <span className="font-medium">{item.label}</span>
-                            </Link>
-                        ))}
+            {/* Main Nav */}
+            <nav className="flex-1 px-4 mt-4 space-y-1">
+                {navItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
                         <Link
-                            to="/profile"
+                            key={item.path}
+                            to={item.path}
+                            onClick={() => setIsSidebarOpen(false)}
                             className={cn(
-                                "flex items-center gap-3 px-4 py-3 rounded-lg transition-colors",
-                                location.pathname === "/profile"
-                                    ? "bg-neon-blue/10 text-neon-blue"
-                                    : "text-gray-400 hover:bg-white/5 hover:text-white"
+                                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group relative",
+                                isActive
+                                    ? "bg-emerald-50 text-emerald-600 dark:bg-[#0d2217] dark:text-white"
+                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-sidebar-hover dark:hover:text-white"
                             )}
-                            onClick={() => setIsMobileMenuOpen(false)}
                         >
-                            <User size={18} />
-                            <span className="font-medium">Profile</span>
+                            {isActive && (
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-accent rounded-l-full" />
+                            )}
+                            <item.icon size={20} className={isActive ? "text-accent" : ""} />
+                            <span>{item.label}</span>
                         </Link>
-                        <div className="pt-4 mt-4 border-t border-white/5 flex justify-between items-center px-4">
-                            <span className="text-xs text-gray-500">Vault: 05940879</span>
-                            <span className="text-xs text-neon-blue flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 bg-neon-blue rounded-full"></span>
-                                Sync Active
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                    );
+                })}
             </nav>
 
-            {/* Main Content Area */}
-            <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto">
-                <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    {children}
-                </div>
-            </main>
+            {/* Bottom Nav */}
+            <div className="px-4 pb-4 space-y-1">
+                {bottomItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            onClick={() => setIsSidebarOpen(false)}
+                            className={cn(
+                                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 relative",
+                                isActive
+                                    ? "bg-emerald-50 text-emerald-600 dark:bg-[#0d2217] dark:text-white"
+                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-sidebar-hover dark:hover:text-white"
+                            )}
+                        >
+                            {isActive && (
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-accent rounded-l-full" />
+                            )}
+                            <item.icon size={20} className={isActive ? "text-accent" : ""} />
+                            <span>{item.label}</span>
+                        </Link>
+                    );
+                })}
 
-            {/* Footer Area */}
-            <footer className="w-full bg-surface-dark border-t border-white/5 py-8 mt-auto">
-                <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="flex flex-col items-center md:items-start gap-1">
-                        <p className="text-gray-400 text-sm">
-                            Created by <span className="text-neon-blue font-semibold">Muhzin CM</span>
-                        </p>
-                        <p className="text-gray-500 text-xs">
-                            © {new Date().getFullYear()} FinSight. All rights reserved.
-                        </p>
-                    </div>
+                {/* Send Feedback */}
+                <button className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-500 hover:text-gray-300 hover:bg-sidebar-hover transition-all duration-200 w-full mb-4">
+                    <MessageSquare size={18} />
+                    <span>Send Feedback</span>
+                </button>
 
-                    <div className="flex items-center gap-4">
-                        <a href="#" className="p-2 text-gray-400 hover:text-neon-blue hover:bg-neon-blue/10 rounded-lg transition-all" title="X (Twitter)">
-                            <Twitter size={20} />
-                        </a>
-                        <a href="#" className="p-2 text-gray-400 hover:text-neon-blue hover:bg-neon-blue/10 rounded-lg transition-all" title="LinkedIn">
-                            <Linkedin size={20} />
-                        </a>
-                        <a href="#" className="p-2 text-gray-400 hover:text-neon-blue hover:bg-neon-blue/10 rounded-lg transition-all" title="Instagram">
-                            <Instagram size={20} />
-                        </a>
+                {/* Cloud Sync Widget */}
+                <div className="bg-gray-50 dark:bg-[#0b0c10] border border-gray-200 dark:border-white/5 rounded-xl p-4 mt-2">
+                    <div className="flex items-center gap-2 mb-1.5">
+                        <Cloud size={16} className="text-blue-500" fill="currentColor" />
+                        <span className="text-[13px] font-semibold text-gray-700 dark:text-gray-200">
+                            Cloud Sync <span className="text-accent">Active</span>
+                        </span>
                     </div>
+                    <p className="text-[12px] text-gray-500 dark:text-gray-400">Last synced {syncMinutes} min ago</p>
+                    <div className="h-px bg-gray-200 dark:bg-white/5 my-3" />
+                    <p className="text-[11px] text-gray-500 tracking-wide">VAULT: 65940879</p>
                 </div>
-            </footer>
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="min-h-screen flex bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-white font-sans transition-colors duration-200">
+            {/* Desktop Sidebar */}
+            <aside className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 bg-white dark:bg-sidebar-bg border-r border-gray-200 dark:border-white/5 z-40 transition-colors duration-200">
+                <SidebarContent />
+            </aside>
+
+            {/* Mobile Sidebar Overlay */}
+            {isSidebarOpen && (
+                <div className="md:hidden fixed inset-0 z-50">
+                    <div
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setIsSidebarOpen(false)}
+                    />
+                    <aside className="relative w-64 h-full bg-sidebar-bg border-r border-white/5 animate-in slide-in-from-left duration-300">
+                        <SidebarContent />
+                    </aside>
+                </div>
+            )}
+
+            {/* Main Content */}
+            <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
+                {/* Top Header Bar */}
+                <header className="sticky top-0 z-30 bg-gray-50/80 dark:bg-dark-bg/80 backdrop-blur-lg">
+                    <div className="px-6 lg:px-8 h-16 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            {/* Mobile hamburger */}
+                            <button
+                                className="md:hidden text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white p-1"
+                                onClick={() => setIsSidebarOpen(true)}
+                            >
+                                <Menu size={22} />
+                            </button>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                            {(location.pathname === "/" || location.pathname === "/transactions") && (
+                                <Button
+                                    onClick={onAddTransaction}
+                                    size="sm"
+                                    className="hidden sm:flex"
+                                >
+                                    <Plus size={16} />
+                                    Add New
+                                </Button>
+                            )}
+                            <button className="relative p-2 text-gray-500 hover:text-gray-900 bg-white border-gray-200 dark:text-gray-400 dark:hover:text-white dark:bg-surface-dark border dark:border-white/5 rounded-full hover:border-gray-300 dark:hover:border-white/10 transition-colors w-9 h-9 flex items-center justify-center">
+                                <Bell size={16} />
+                                <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-accent border-2 border-white dark:border-dark-bg rounded-full" />
+                            </button>
+                            <button onClick={toggleTheme} className="p-2 text-gray-500 hover:text-gray-900 bg-white border-gray-200 dark:text-gray-400 dark:hover:text-white dark:bg-surface-dark border dark:border-white/5 rounded-full hover:border-gray-300 dark:hover:border-white/10 transition-colors w-9 h-9 flex items-center justify-center">
+                                {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+                            </button>
+                            <Link
+                                to="/profile"
+                                className="flex items-center gap-2 pl-3 pr-1 py-1 rounded-full bg-white border-gray-200 dark:bg-surface-dark border dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10 transition-all"
+                            >
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden lg:block">{currentUser?.name || "User"}</span>
+                                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-accent/30 to-emerald-800 flex items-center justify-center text-accent text-xs font-bold overflow-hidden">
+                                    <img src="https://ui-avatars.com/api/?name=User&background=10b981&color=fff" alt="Avatar" className="w-full h-full object-cover" />
+                                </div>
+                            </Link>
+                        </div>
+                    </div>
+                </header>
+
+                {/* Page Content */}
+                <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto overflow-x-hidden relative">
+                    <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        {children}
+                    </div>
+                </main>
+
+                {/* Footer */}
+                <footer className="w-full border-t border-gray-200 dark:border-white/5 py-6 mt-auto bg-white/30 dark:bg-surface-dark/30 transition-colors duration-200">
+                    <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="flex flex-col items-center md:items-start gap-1">
+                            <p className="text-gray-500 dark:text-gray-400 text-sm">
+                                Created by <span className="text-accent font-semibold">Muhzin CM</span>
+                            </p>
+                            <p className="text-gray-400 dark:text-gray-600 text-xs">
+                                © {new Date().getFullYear()} FinSight. All rights reserved.
+                            </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <a href="#" className="p-2 text-gray-500 hover:text-accent hover:bg-accent/10 rounded-lg transition-all" title="X (Twitter)">
+                                <Twitter size={18} />
+                            </a>
+                            <a href="#" className="p-2 text-gray-500 hover:text-accent hover:bg-accent/10 rounded-lg transition-all" title="LinkedIn">
+                                <Linkedin size={18} />
+                            </a>
+                            <a href="#" className="p-2 text-gray-500 hover:text-accent hover:bg-accent/10 rounded-lg transition-all" title="Instagram">
+                                <Instagram size={18} />
+                            </a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
         </div>
     );
 }

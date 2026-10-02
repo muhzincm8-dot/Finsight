@@ -101,11 +101,11 @@ export default function Profile() {
     return (
         <div className="max-w-2xl mx-auto space-y-8">
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold">User Profile</h1>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">User Profile</h1>
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="gap-2 text-neon-blue hover:bg-neon-blue/10"
+                    className="gap-2 text-accent hover:bg-accent/10"
                     onClick={handleEditToggle}
                     disabled={isSaving}
                 >
@@ -122,24 +122,24 @@ export default function Profile() {
 
             {/* Premium Banner */}
             {isPremium ? (
-                <div className="p-4 rounded-xl bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/30 flex items-center gap-3">
-                    <Crown size={20} className="text-yellow-400 flex-shrink-0" />
+                <div className="p-4 rounded-xl bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-500/10 dark:to-amber-500/10 border border-yellow-200 dark:border-yellow-500/30 flex items-center gap-3">
+                    <Crown size={20} className="text-yellow-600 dark:text-yellow-400 flex-shrink-0" />
                     <div>
-                        <p className="text-yellow-300 font-semibold text-sm">Premium Member — Lifetime Access</p>
-                        <p className="text-yellow-500/70 text-xs">
+                        <p className="text-yellow-800 dark:text-yellow-300 font-semibold text-sm">Premium Member — Lifetime Access</p>
+                        <p className="text-yellow-600 dark:text-yellow-500/70 text-xs">
                             Unlocked on {currentUser?.paymentDate ? new Date(currentUser.paymentDate).toLocaleDateString() : "—"}
                         </p>
                     </div>
                 </div>
             ) : (
                 <div
-                    className="p-4 rounded-xl bg-gradient-to-r from-neon-blue/5 to-purple-500/5 border border-neon-blue/20 flex items-center justify-between gap-3 cursor-pointer hover:border-neon-blue/40 transition-colors"
+                    className="p-4 rounded-xl bg-gradient-to-r from-accent/5 to-purple-500/5 border border-accent/20 flex items-center justify-between gap-3 cursor-pointer hover:border-accent/40 transition-colors"
                     onClick={() => navigate("/upgrade")}
                 >
                     <div className="flex items-center gap-3">
-                        <Zap size={20} className="text-neon-blue flex-shrink-0" />
+                        <Zap size={20} className="text-accent flex-shrink-0" />
                         <div>
-                            <p className="text-white font-semibold text-sm">Upgrade to Premium</p>
+                            <p className="text-gray-900 dark:text-white font-semibold text-sm">Upgrade to Premium</p>
                             <p className="text-gray-500 text-xs">One-time payment for lifetime access</p>
                         </div>
                     </div>
@@ -148,11 +148,11 @@ export default function Profile() {
             )}
 
             <Card className="relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-32 bg-neon-blue/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                <div className="absolute top-0 right-0 p-32 bg-accent/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
 
                 <div className="flex flex-col md:flex-row items-center gap-6 mb-8 relative z-10">
                     <div className="relative group">
-                        <div className="w-24 h-24 rounded-full bg-surface-dark border-2 border-neon-blue/30 flex items-center justify-center text-neon-blue shadow-[0_0_20px_rgba(0,243,255,0.2)] overflow-hidden">
+                        <div className="w-24 h-24 rounded-full bg-white dark:bg-surface-dark border-2 border-accent/30 flex items-center justify-center text-accent shadow-[0_0_20px_rgba(0,243,255,0.2)] overflow-hidden">
                             {profileImage ? (
                                 <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
                             ) : (
@@ -181,11 +181,11 @@ export default function Profile() {
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                className="bg-transparent border-b border-white/20 outline-none text-white text-2xl font-bold w-full px-1 focus:border-neon-blue mb-1"
+                                className="bg-transparent border-b border-gray-300 dark:border-white/20 outline-none text-gray-900 dark:text-white text-2xl font-bold w-full px-1 focus:border-accent mb-1"
                                 placeholder="Your name"
                             />
                         ) : (
-                            <h2 className="text-2xl font-bold text-white mb-1">
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                                 {currentUser?.name || "User"}
                             </h2>
                         )}
@@ -201,7 +201,7 @@ export default function Profile() {
                                         type="tel"
                                         value={phoneNumber}
                                         onChange={(e) => setPhoneNumber(e.target.value)}
-                                        className="bg-transparent border-b border-white/20 outline-none text-white w-[160px] px-1 focus:border-neon-blue"
+                                        className="bg-transparent border-b border-gray-300 dark:border-white/20 outline-none text-gray-900 dark:text-white w-[160px] px-1 focus:border-accent"
                                         placeholder="Phone number"
                                     />
                                 ) : (
@@ -230,21 +230,21 @@ export default function Profile() {
                     </div>
                 </div>
 
-                <div className="space-y-6 border-t border-white/5 pt-6 relative z-10">
+                <div className="space-y-6 border-t border-gray-200 dark:border-white/5 pt-6 relative z-10">
                     <div className="grid gap-4">
-                        <div className="p-4 rounded-lg bg-surface-dark border border-white/5 flex justify-between items-center group hover:border-neon-blue/30 transition-colors">
+                        <div className="p-4 rounded-lg bg-gray-50 dark:bg-surface-dark border border-gray-200 dark:border-white/5 flex justify-between items-center group hover:border-accent/30 transition-colors">
                             <div>
-                                <p className="font-medium text-white flex items-center gap-2">
-                                    <Lock size={16} className="text-neon-blue" /> Security Level
+                                <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
+                                    <Lock size={16} className="text-accent" /> Security Level
                                 </p>
                                 <p className="text-sm text-gray-500">Standard Encryption</p>
                             </div>
                             <Button variant="outline" size="sm" onClick={() => setIsSecurityModalOpen(true)}>Manage</Button>
                         </div>
 
-                        <div className="p-4 rounded-lg bg-surface-dark border border-white/5 flex justify-between items-center group hover:border-neon-blue/30 transition-colors">
+                        <div className="p-4 rounded-lg bg-gray-50 dark:bg-surface-dark border border-gray-200 dark:border-white/5 flex justify-between items-center group hover:border-accent/30 transition-colors">
                             <div>
-                                <p className="font-medium text-white flex items-center gap-2">
+                                <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
                                     <Download size={16} className="text-neon-pink" /> Data Export
                                 </p>
                                 <p className="text-sm text-gray-500">Download your vault data</p>
@@ -254,11 +254,11 @@ export default function Profile() {
 
                         {currentUser?.role === 'admin' && (
                             <div
-                                className="p-4 rounded-lg bg-purple-500/5 border border-purple-500/20 flex justify-between items-center group hover:border-purple-500/40 transition-colors cursor-pointer"
+                                className="p-4 rounded-lg bg-purple-50 dark:bg-purple-500/5 border border-purple-200 dark:border-purple-500/20 flex justify-between items-center group hover:border-purple-500/40 transition-colors cursor-pointer"
                                 onClick={() => navigate("/admin")}
                             >
                                 <div>
-                                    <p className="font-medium text-white flex items-center gap-2">
+                                    <p className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
                                         <Shield size={16} className="text-purple-400" /> Admin Panel
                                     </p>
                                     <p className="text-sm text-gray-500">Manage users and settings</p>
@@ -279,16 +279,16 @@ export default function Profile() {
 
             <Modal isOpen={isSecurityModalOpen} onClose={() => setIsSecurityModalOpen(false)} title="Security Settings">
                 <div className="space-y-4">
-                    <div className="p-4 bg-surface-dark rounded-lg border border-neon-blue/20">
-                        <h4 className="font-bold text-white mb-1">Encryption Strength</h4>
-                        <p className="text-sm text-gray-400">Current Level: <span className="text-neon-blue">AES-256 (Standard)</span></p>
+                    <div className="p-4 bg-gray-50 dark:bg-surface-dark rounded-lg border border-gray-200 dark:border-accent/20">
+                        <h4 className="font-bold text-gray-900 dark:text-white mb-1">Encryption Strength</h4>
+                        <p className="text-sm text-gray-400">Current Level: <span className="text-accent">AES-256 (Standard)</span></p>
                     </div>
                     <div className="space-y-2">
                         <label className="flex items-center justify-between p-3 rounded hover:bg-white/5 cursor-pointer">
                             <span className="text-gray-300">Two-Factor Authentication</span>
                             <input
                                 type="checkbox"
-                                className="accent-neon-blue w-4 h-4"
+                                className="accent-accent w-4 h-4"
                                 checked={is2FAEnabled}
                                 onChange={handle2FAToggle}
                             />

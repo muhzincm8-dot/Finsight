@@ -6,12 +6,12 @@ export function TransactionItem({ transaction, onDelete }) {
 
     return (
         <div
-            className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center gap-4 md:gap-0 px-6 py-4 bg-card-bg/50 border border-white/5 rounded-lg hover:border-neon-blue/30 hover:bg-white/5 transition-all duration-300 group relative"
+            className="flex flex-col md:grid md:grid-cols-12 items-start md:items-center gap-4 md:gap-0 px-6 py-4 bg-white dark:bg-card-bg/50 border border-gray-200 dark:border-white/5 rounded-lg hover:border-accent/30 hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-300 group relative"
         >
-            <div className="md:col-span-2 text-xs md:text-sm text-gray-400 font-mono">{formatDate(date)}</div>
-            <div className="md:col-span-5 font-medium text-white group-hover:text-neon-blue transition-colors truncate pr-4 text-base md:text-sm">{description}</div>
+            <div className="md:col-span-2 text-xs md:text-sm text-gray-500 dark:text-gray-400 font-mono">{formatDate(date)}</div>
+            <div className="md:col-span-5 font-medium text-gray-900 dark:text-white group-hover:text-accent transition-colors truncate pr-4 text-base md:text-sm">{description}</div>
             <div className="md:col-span-2 flex items-center">
-                <span className="px-2 py-0.5 md:py-1 text-[10px] md:text-xs rounded-full bg-white/5 text-gray-300 border border-white/10">
+                <span className="px-2 py-0.5 md:py-1 text-[10px] md:text-xs rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-white/10">
                     {category}
                 </span>
             </div>

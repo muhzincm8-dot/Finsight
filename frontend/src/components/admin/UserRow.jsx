@@ -23,7 +23,7 @@ export function UserRow({ user, onToggleStatus, onToggleRole, currentUserId }) {
     <tr className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
       <td className="px-5 py-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-neon-blue/20 to-purple-500/20 border border-white/10 flex items-center justify-center text-neon-blue font-bold text-sm flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent/20 to-purple-500/20 border border-white/10 flex items-center justify-center text-accent font-bold text-sm flex-shrink-0">
             {user.name?.[0]?.toUpperCase() || "?"}
           </div>
           <div>

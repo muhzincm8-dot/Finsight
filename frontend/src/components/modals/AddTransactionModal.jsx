@@ -63,7 +63,7 @@ export function AddTransactionModal({ isOpen, onClose }) {
                     <div>
                         <label className="text-xs font-bold text-gray-500 ml-1 uppercase mb-1.5 block">Sector</label>
                         <select
-                            className="w-full bg-surface-dark border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-neon-blue/50 transition-colors h-12 appearance-none"
+                            className="w-full bg-surface-dark border border-white/10 rounded-lg px-4 py-3 text-white outline-none focus:border-accent/50 transition-colors h-12 appearance-none"
                             value={formData.category}
                             onChange={e => handleFieldChange('category', e.target.value)}
                         >

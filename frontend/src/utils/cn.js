@@ -6,17 +6,30 @@ export function cn(...inputs) {
 }
 
 export const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
         style: 'currency',
         currency: 'INR',
+        minimumFractionDigits: 2,
     }).format(amount);
 };
 
-export const formatDate = (dateString) => {
+export const formatDate = (dateString, includeTime = false) => {
     if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', {
+    const date = new Date(dateString);
+    const datePart = date.toLocaleDateString('en-GB', {
+        day: '2-digit',
         month: 'short',
-        day: 'numeric',
         year: 'numeric'
     });
+    
+    if (includeTime) {
+        const timePart = date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+        return `${datePart}, ${timePart}`;
+    }
+    
+    return datePart;
 };

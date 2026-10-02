@@ -16,7 +16,7 @@ export default function Insights() {
 
     return (
         <div className="space-y-8">
-            <h1 className="text-xl font-bold mb-4">Predictive Analytics</h1>
+            <h1 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Predictive Analytics</h1>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <SpendingDistribution categoryData={categoryData} />

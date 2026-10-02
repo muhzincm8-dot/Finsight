@@ -1,8 +1,13 @@
-/** Navigation items for the main app layout */
+/** Navigation items for the main app sidebar */
 export const NAV_ITEMS = [
   { label: "Dashboard", path: "/", icon: "LayoutDashboard" },
-  { label: "Transactions", path: "/transactions", icon: "WalletCards" },
+  { label: "Transactions", path: "/transactions", icon: "ArrowLeftRight" },
   { label: "Insights", path: "/insights", icon: "PieChart" },
+];
+
+/** Sidebar bottom navigation items */
+export const SIDEBAR_BOTTOM_ITEMS = [
+  { label: "Settings", path: "/profile", icon: "Settings" },
 ];
 
 /** Default monthly budget goal */
@@ -10,12 +15,10 @@ export const DEFAULT_BUDGET_GOAL = 2000;
 
 /** Chart color palette shared across pie/bar charts */
 export const CHART_COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FFBB28",
-  "#FF8042",
-  "#b026ff",
-  "#ff00ff",
+  "#10b981",
+  "#3b82f6",
+  "#a855f7",
+  "#f59e0b",
 ];
 
 /** Expense category options */

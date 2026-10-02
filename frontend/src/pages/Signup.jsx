@@ -37,19 +37,19 @@ export default function Signup() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-dark-bg p-4 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-purple-900/20 via-dark-bg to-dark-bg">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-bg p-4 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-emerald-50 via-gray-50 to-gray-50 dark:from-emerald-900/20 dark:via-dark-bg dark:to-dark-bg">
             <div className="w-full max-w-md space-y-8">
                 <div className="text-center space-y-2">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-blue to-purple-600 shadow-[0_0_30px_rgba(176,38,255,0.3)] mb-4">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-[0_0_30px_rgba(16,185,129,0.3)] mb-4">
                         <TrendingUp className="w-8 h-8 text-white" />
                     </div>
-                    <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-neon-blue">
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
                         Create Account
                     </h2>
-                    <p className="text-gray-400">Join the future of finance</p>
+                    <p className="text-gray-500 dark:text-gray-400">Join the future of finance</p>
                 </div>
 
-                <Card className="border-t border-purple-500/20">
+                <Card className="border-t-2 border-t-accent w-full border-gray-200 dark:border-white/5 dark:border-t-accent">
                     {error && (
                         <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg flex items-center gap-3 text-red-400 text-sm">
                             <AlertCircle size={18} />
@@ -108,14 +108,14 @@ export default function Signup() {
                             required
                         />
 
-                        <Button className="w-full bg-gradient-to-r from-neon-blue to-purple-600 hover:from-neon-blue hover:to-purple-500 shadow-lg shadow-purple-500/20" disabled={loading}>
+                        <Button className="w-full shadow-lg shadow-accent/20" disabled={loading}>
                             {loading ? "Creating Account..." : "Create Account"}
                         </Button>
                     </form>
 
                     <div className="mt-6 text-center text-sm text-gray-500">
                         Already have an account?{" "}
-                        <Link to="/login" className="text-neon-blue hover:text-white font-medium transition-colors">
+                        <Link to="/login" className="text-accent hover:text-emerald-700 dark:hover:text-white font-medium transition-colors">
                             Sign in
                         </Link>
                     </div>

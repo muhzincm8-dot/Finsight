@@ -79,7 +79,7 @@ export default function PaymentPage() {
                     email: currentUser?.email,
                     contact: currentUser?.mobileNumber,
                 },
-                theme: { color: "#00f3ff" },
+                theme: { color: "#10b981" },
                 modal: {
                     ondismiss: () => setLoading(false),
                 },
@@ -110,14 +110,14 @@ export default function PaymentPage() {
 
     if (currentUser?.hasPaid || success) {
         return (
-            <div className="min-h-screen bg-dark-bg flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-bg flex items-center justify-center p-4">
                 <div className="text-center space-y-6 max-w-md">
                     <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-yellow-400/20 to-amber-500/20 border-2 border-yellow-400/40 flex items-center justify-center shadow-[0_0_40px_rgba(234,179,8,0.2)]">
                         <Crown size={40} className="text-yellow-400" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold text-white mb-2">You're Premium!</h1>
-                        <p className="text-gray-400">
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">You're Premium!</h1>
+                        <p className="text-gray-600 dark:text-gray-400">
                             {success
                                 ? "Payment successful! You now have lifetime access to all Finsight features."
                                 : "You already have lifetime premium access. Enjoy all features!"}
@@ -135,17 +135,17 @@ export default function PaymentPage() {
     }
 
     return (
-        <div className="min-h-screen bg-dark-bg text-white">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-white">
             {/* Header */}
-            <div className="border-b border-white/5 bg-surface-dark/50 backdrop-blur-sm">
+            <div className="border-b border-gray-200 dark:border-white/5 bg-white/50 dark:bg-surface-dark/50 backdrop-blur-sm">
                 <div className="max-w-5xl mx-auto px-6 py-4 flex items-center gap-4">
                     <button
                         onClick={() => navigate(-1)}
-                        className="p-2 rounded-lg hover:bg-white/5 text-gray-400 hover:text-white transition-colors"
+                        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                     >
                         <ArrowLeft size={18} />
                     </button>
-                    <span className="text-gray-400 text-sm">Upgrade to Premium</span>
+                    <span className="text-gray-500 dark:text-gray-400 text-sm">Upgrade to Premium</span>
                 </div>
             </div>
 
@@ -154,17 +154,17 @@ export default function PaymentPage() {
                     {/* Left — Features */}
                     <div className="space-y-8">
                         <div>
-                            <div className="inline-flex items-center gap-2 text-xs font-medium text-neon-blue bg-neon-blue/10 border border-neon-blue/20 px-3 py-1.5 rounded-full mb-4">
+                            <div className="inline-flex items-center gap-2 text-xs font-medium text-accent bg-accent/10 border border-accent/20 px-3 py-1.5 rounded-full mb-4">
                                 <Sparkles size={12} />
                                 One-time payment
                             </div>
-                            <h1 className="text-4xl font-bold leading-tight mb-4">
+                            <h1 className="text-4xl font-bold leading-tight mb-4 text-gray-900 dark:text-white">
                                 Unlock{" "}
-                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-amber-500">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 to-amber-500 dark:from-yellow-400 dark:to-amber-500">
                                     Lifetime Premium
                                 </span>
                             </h1>
-                            <p className="text-gray-400 text-lg leading-relaxed">
+                            <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed">
                                 Pay once, get lifetime access to every feature in Finsight — now and in the future.
                             </p>
                         </div>
@@ -172,10 +172,10 @@ export default function PaymentPage() {
                         <ul className="space-y-3">
                             {FEATURES.map(({ icon: Icon, text }, i) => (
                                 <li key={i} className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-neon-blue/10 border border-neon-blue/20 flex items-center justify-center flex-shrink-0">
-                                        <Icon size={14} className="text-neon-blue" />
+                                    <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center flex-shrink-0">
+                                        <Icon size={14} className="text-accent" />
                                     </div>
-                                    <span className="text-gray-300 text-sm">{text}</span>
+                                    <span className="text-gray-700 dark:text-gray-300 text-sm">{text}</span>
                                 </li>
                             ))}
                         </ul>
@@ -183,26 +183,26 @@ export default function PaymentPage() {
 
                     {/* Right — Pricing Card */}
                     <div>
-                        <div className="relative rounded-2xl bg-gradient-to-br from-surface-dark to-dark-bg border border-white/10 p-8 shadow-[0_0_60px_rgba(0,243,255,0.05)] overflow-hidden">
+                        <div className="relative rounded-2xl bg-white dark:bg-gradient-to-br dark:from-surface-dark dark:to-dark-bg border border-gray-200 dark:border-white/10 p-8 shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_0_60px_rgba(0,243,255,0.05)] overflow-hidden">
                             {/* Glow effect */}
-                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-neon-blue/40 to-transparent"></div>
-                            <div className="absolute -top-20 -right-20 w-40 h-40 bg-neon-blue/5 rounded-full blur-3xl"></div>
+                            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent"></div>
+                            <div className="absolute -top-20 -right-20 w-40 h-40 bg-accent/5 rounded-full blur-3xl"></div>
 
                             <div className="relative">
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-400/20 to-amber-500/20 border border-yellow-400/30 flex items-center justify-center">
                                         <Crown size={22} className="text-yellow-400" />
                                     </div>
-                                    <span className="text-xs font-medium text-neon-blue bg-neon-blue/10 border border-neon-blue/20 px-2.5 py-1 rounded-full">
+                                    <span className="text-xs font-medium text-accent bg-accent/10 border border-accent/20 px-2.5 py-1 rounded-full">
                                         Most Popular
                                     </span>
                                 </div>
 
-                                <h2 className="text-2xl font-bold text-white mb-1">Finsight Premium</h2>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Finsight Premium</h2>
                                 <p className="text-gray-500 text-sm mb-6">Everything you need, forever.</p>
 
                                 <div className="flex items-end gap-2 mb-6">
-                                    <span className="text-5xl font-black text-white">₹499</span>
+                                    <span className="text-5xl font-black text-gray-900 dark:text-white">₹499</span>
                                     <span className="text-gray-500 text-sm mb-2">one-time</span>
                                 </div>
 
@@ -213,8 +213,8 @@ export default function PaymentPage() {
                                         "All future updates included",
                                         "Cancel anytime (no subscription)",
                                     ].map((item, i) => (
-                                        <div key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                                            <Check size={14} className="text-neon-blue flex-shrink-0" />
+                                        <div key={i} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                                            <Check size={14} className="text-accent flex-shrink-0" />
                                             {item}
                                         </div>
                                     ))}
@@ -246,7 +246,7 @@ export default function PaymentPage() {
                                     )}
                                 </button>
 
-                                <p className="text-center text-xs text-gray-600 mt-4">
+                                <p className="text-center text-xs text-gray-500 dark:text-gray-600 mt-4">
                                     Secured by Razorpay · 256-bit SSL encryption
                                 </p>
                             </div>

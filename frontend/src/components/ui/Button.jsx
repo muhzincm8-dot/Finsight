@@ -2,8 +2,8 @@ import { Loader2 } from "lucide-react";
 import { cn } from "../../utils/cn";
 
 const variants = {
-    primary: "bg-neon-blue text-dark-bg hover:bg-[#33f6ff] shadow-[0_0_15px_rgba(0,243,255,0.4)] hover:shadow-[0_0_25px_rgba(0,243,255,0.6)]",
-    outline: "border border-neon-blue text-neon-blue hover:bg-neon-blue/10",
+    primary: "bg-accent text-white hover:bg-accent-light shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_rgba(16,185,129,0.4)]",
+    outline: "border border-accent/50 text-accent hover:bg-accent/10",
     ghost: "text-gray-400 hover:text-white hover:bg-white/5",
     danger: "bg-red-500/10 text-red-400 border border-red-500/50 hover:bg-red-500/20 hover:text-red-300",
 };

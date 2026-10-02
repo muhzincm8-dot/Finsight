@@ -26,7 +26,7 @@ export function Modal({ isOpen, onClose, title, children }) {
             />
 
             {/* Content */}
-            <div className="relative w-full max-w-lg bg-[#0a0a16] border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="relative w-full max-w-lg bg-surface-dark border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                 <div className="flex items-center justify-between p-6 border-b border-white/5">
                     <h2 className="text-xl font-bold text-white tracking-wide">{title}</h2>
                     <button

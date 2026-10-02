@@ -65,7 +65,7 @@ export default function AdminDashboard() {
             <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
                 {/* Stats */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <AdminStatCard icon={Users} label="Total Users" value={stats.total} color="bg-neon-blue/20" />
+                    <AdminStatCard icon={Users} label="Total Users" value={stats.total} color="bg-accent/20" />
                     <AdminStatCard icon={UserCheck} label="Active" value={stats.active} color="bg-green-500/20" />
                     <AdminStatCard icon={UserX} label="Suspended" value={stats.suspended} color="bg-red-500/20" />
                     <AdminStatCard icon={Crown} label="Premium" value={stats.premium} color="bg-yellow-500/20" />
@@ -82,7 +82,7 @@ export default function AdminDashboard() {
                                 placeholder="Search by name or email..."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                className="w-full pl-8 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 focus:outline-none focus:border-neon-blue/50 transition-colors"
+                                className="w-full pl-8 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white placeholder-gray-600 focus:outline-none focus:border-accent/50 transition-colors"
                             />
                         </div>
                         <div className="flex items-center gap-2 flex-wrap">
@@ -92,7 +92,7 @@ export default function AdminDashboard() {
                                     onClick={() => setFilter(f)}
                                     className={`text-xs px-3 py-1.5 rounded-lg capitalize transition-colors ${
                                         filter === f
-                                            ? "bg-neon-blue/20 text-neon-blue border border-neon-blue/30"
+                                            ? "bg-accent/20 text-accent border border-accent/30"
                                             : "text-gray-500 hover:text-white hover:bg-white/5"
                                     }`}
                                 >
