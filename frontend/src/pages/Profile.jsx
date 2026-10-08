@@ -75,10 +75,29 @@ export default function Profile() {
         }
     };
 
+    const [phoneError, setPhoneError] = useState("");
+
+    const handlePhoneChange = (e) => {
+        // Strip non-digit characters and cap at 10
+        const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+        setPhoneNumber(digits);
+        if (digits.length > 0 && digits.length < 10) {
+            setPhoneError("Phone number must be exactly 10 digits.");
+        } else {
+            setPhoneError("");
+        }
+    };
+
     const handleEditToggle = async () => {
         if (isEditing) {
+            // Validate phone before saving
+            if (phoneNumber && phoneNumber.length !== 10) {
+                setPhoneError("Phone number must be exactly 10 digits.");
+                return;
+            }
             try {
                 setSaveError("");
+                setPhoneError("");
                 setIsSaving(true);
                 await updateProfile({ name, mobileNumber: phoneNumber });
             } catch (err) {
@@ -197,13 +216,25 @@ export default function Profile() {
                             <div className="flex items-center gap-2 text-gray-400 justify-center md:justify-start">
                                 <Phone size={14} />
                                 {isEditing ? (
-                                    <input
-                                        type="tel"
-                                        value={phoneNumber}
-                                        onChange={(e) => setPhoneNumber(e.target.value)}
-                                        className="bg-transparent border-b border-gray-300 dark:border-white/20 outline-none text-gray-900 dark:text-white w-[160px] px-1 focus:border-accent"
-                                        placeholder="Phone number"
-                                    />
+                                    <div className="flex flex-col gap-0.5">
+                                        <input
+                                            type="tel"
+                                            value={phoneNumber}
+                                            onChange={handlePhoneChange}
+                                            maxLength={10}
+                                            inputMode="numeric"
+                                            className={`bg-transparent border-b outline-none w-[160px] px-1 text-gray-900 dark:text-white transition-colors ${
+                                                phoneError
+                                                    ? "border-red-400 focus:border-red-500"
+                                                    : "border-gray-300 dark:border-white/20 focus:border-accent"
+                                            }`}
+                                            placeholder="10-digit number"
+                                        />
+                                        {phoneError && (
+                                            <span className="text-[11px] text-red-500 mt-0.5">{phoneError}</span>
+                                        )}
+                                        <span className="text-[11px] text-gray-400">{phoneNumber.length}/10</span>
+                                    </div>
                                 ) : (
                                     <span>{currentUser?.mobileNumber || "Not set"}</span>
                                 )}

@@ -126,6 +126,96 @@ export function Layout({ children, onAddTransaction }) {
         </div>
     );
 
+    // Mobile sidebar — respects theme toggle (white in light mode, dark in dark mode)
+    const isDark = theme === 'dark';
+    const MobileSidebarContent = () => (
+        <div className={cn("flex flex-col h-full transition-colors duration-200", isDark ? "bg-sidebar-bg" : "bg-white")}>
+            {/* Logo */}
+            <div className="px-6 py-6 flex items-center gap-3">
+                <div className={cn("w-10 h-10 rounded-xl bg-accent flex items-center justify-center border", isDark ? "border-white/5" : "border-gray-100")}>
+                    <TrendingUp className="w-6 h-6 text-white" strokeWidth={3} />
+                </div>
+                <span className={cn("text-xl font-bold tracking-wide", isDark ? "text-white" : "text-gray-900")}>
+                    FinSight
+                </span>
+            </div>
+
+            {/* Main Nav */}
+            <nav className="flex-1 px-4 mt-4 space-y-1">
+                {navItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            onClick={() => setIsSidebarOpen(false)}
+                            className={cn(
+                                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group relative",
+                                isActive
+                                    ? isDark ? "bg-[#0d2217] text-white" : "bg-emerald-50 text-emerald-600"
+                                    : isDark ? "text-gray-400 hover:bg-sidebar-hover hover:text-white" : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                            )}
+                        >
+                            {isActive && (
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-accent rounded-l-full" />
+                            )}
+                            <item.icon size={20} className={isActive ? "text-accent" : isDark ? "text-gray-400" : "text-gray-400"} />
+                            <span>{item.label}</span>
+                        </Link>
+                    );
+                })}
+            </nav>
+
+            {/* Bottom Nav */}
+            <div className="px-4 pb-4 space-y-1">
+                {bottomItems.map((item) => {
+                    const isActive = location.pathname === item.path;
+                    return (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            onClick={() => setIsSidebarOpen(false)}
+                            className={cn(
+                                "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 relative",
+                                isActive
+                                    ? isDark ? "bg-[#0d2217] text-white" : "bg-emerald-50 text-emerald-600"
+                                    : isDark ? "text-gray-400 hover:bg-sidebar-hover hover:text-white" : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                            )}
+                        >
+                            {isActive && (
+                                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-accent rounded-l-full" />
+                            )}
+                            <item.icon size={20} className={isActive ? "text-accent" : "text-gray-400"} />
+                            <span>{item.label}</span>
+                        </Link>
+                    );
+                })}
+
+                {/* Send Feedback */}
+                <button className={cn(
+                    "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 w-full mb-4",
+                    isDark ? "text-gray-400 hover:text-white hover:bg-sidebar-hover" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                )}>
+                    <MessageSquare size={18} className="text-gray-400" />
+                    <span>Send Feedback</span>
+                </button>
+
+                {/* Cloud Sync Widget */}
+                <div className={cn("border rounded-xl p-4 mt-2", isDark ? "bg-[#0b0c10] border-white/5" : "bg-gray-50 border-gray-200")}>
+                    <div className="flex items-center gap-2 mb-1.5">
+                        <Cloud size={16} className="text-blue-500" fill="currentColor" />
+                        <span className={cn("text-[13px] font-semibold", isDark ? "text-gray-200" : "text-gray-700")}>
+                            Cloud Sync <span className="text-accent">Active</span>
+                        </span>
+                    </div>
+                    <p className={cn("text-[12px]", isDark ? "text-gray-400" : "text-gray-500")}>Last synced {syncMinutes} min ago</p>
+                    <div className={cn("h-px my-3", isDark ? "bg-white/5" : "bg-gray-200")} />
+                    <p className={cn("text-[11px] tracking-wide", isDark ? "text-gray-500" : "text-gray-400")}>VAULT: 65940879</p>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen flex bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-white font-sans transition-colors duration-200">
             {/* Desktop Sidebar */}
@@ -137,11 +227,11 @@ export function Layout({ children, onAddTransaction }) {
             {isSidebarOpen && (
                 <div className="md:hidden fixed inset-0 z-50">
                     <div
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                         onClick={() => setIsSidebarOpen(false)}
                     />
-                    <aside className="relative w-64 h-full bg-sidebar-bg border-r border-white/5 animate-in slide-in-from-left duration-300">
-                        <SidebarContent />
+                    <aside className={cn("relative w-64 h-full border-r animate-in slide-in-from-left duration-300", isDark ? "bg-sidebar-bg border-white/5" : "bg-white border-gray-200")}>
+                        <MobileSidebarContent />
                     </aside>
                 </div>
             )}
